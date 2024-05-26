@@ -53,23 +53,30 @@ wide range of sports disciplines and competition formats, each with its own
 unique requirements and dynamics.
 
 #### DATASET: Sports Events Data:
+
 ● Kaggle: Kaggle hosts various sports-related datasets, including historical
 sports event data, schedules, and outcomes.
 
 ● Sports APIs: Some sports organizations and data providers offer APIs that
 allow access to real-time and historical sports event data. For example, the
-ESPN API provides access to sports event schedules and results. Participant
-Registration Data:-
+ESPN API provides access to sports event schedules and results. 
+
+Participant Registration Data:-
+
 ● School Sports Departments: Contact local school sports departments or
 sports clubs to collect anonymized participant registration data for
 school-level sports events.
+
 ● Online Registration Platforms: Explore open datasets or public APIs from
 online registration platforms used for sports events. Websites like Eventbrite
 or Meetup may offer access to event registration data.
+
 Performance Metrics Data:-
+
 ● Sports Analytics Platforms: Websites like ESPN, Sports Reference, or
 Stathead provide access to sports statistics and performance metrics across
 various sports disciplines.
+
 ● Open Sports Data: Open datasets available on platforms like Kaggle or
 GitHub may contain historical performance data for athletes and teams in
 different sports.
@@ -79,27 +86,34 @@ different sports.
 information about sports venues, facilities, and amenities. You can extract
 relevant data using OSM's API or download pre-processed datasets from
 third-party sources.
-Safety and Risk Data:-
-● Government Agencies: Check with local government agencies or
-emergency services
 
-departments for datasets related to safety protocols, risk assessments, and
+Safety and Risk Data:-
+
+● Government Agencies: Check with local government agencies or
+emergency services departments for datasets related to safety protocols, risk assessments, and
 incident reports for sports events.
+
 ● Public Safety Databases: Some cities or regions maintain public safety
 databases containing information about incidents, accidents, and
 emergency responses, which may include data relevant to sports events.
+
 Weather and Environmental Data:
+
 ● NOAA Climate Data Online: The National Oceanic and Atmospheric
 Administration (NOAA) offers free access to historical weather data through
 its Climate Data Online (CDO) platform.
+
 ● OpenWeatherMap: OpenWeatherMap provides APIs and datasets
 containing weather forecasts and historical weather data for locations
 worldwide.
+
 Historical Trends and Market Research:-
+
 ● Google Scholar: Search for academic publications and research studies on
 sports
 events management, participant demographics, and market trends. Many
 research papers are freely available for download.
+
 ● Industry Reports: Look for free industry reports and market analyses on
 sports events management, fan engagement, sponsorship trends, and
 sports industry outlooks from reputable sources like sports industry

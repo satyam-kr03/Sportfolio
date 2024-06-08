@@ -1,5 +1,4 @@
 # SportChastic
-KLEOS 2.0 - Team Antarctica
 
 ### AI-Based Sports Events Management for Schools at Various Levels.
 

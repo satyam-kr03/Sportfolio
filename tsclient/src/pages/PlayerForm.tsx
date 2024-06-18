@@ -20,8 +20,47 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const days = [
+  {
+    id: "monday",
+    label: "Monday",
+  },
+  {
+    id: "tuesday",
+    label: "Tuesday",
+  },
+  {
+    id: "wednesday",
+    label: "Wednesday",
+  },
+  {
+    id: "thursday",
+    label: "Thursday",
+  },
+  {
+    id: "friday",
+    label: "Friday",
+  },
+  {
+    id: "saturday",
+    label: "Saturday",
+  },
+  {
+    id: "sunday",
+    label: "Sunday",
+  },
+] as const;
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -30,6 +69,20 @@ const formSchema = z.object({
   dob: z.date({
     required_error: "A date of birth is required.",
   }),
+  phone: z.string().min(10, {
+    message: "Phone number must be at least 10 characters.",
+  }),
+  psport: z.string({
+    required_error: "Please select at least one sport.",
+  }),
+  ssport: z.string(),
+  plevel: z.string(),
+  slevel: z.string(),
+  height: z.number(),
+  weight: z.number(),
+  days: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one day.",
+  }),
 });
 
 export default function PlayerForm() {
@@ -37,6 +90,7 @@ export default function PlayerForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      days: ["saturday", "sunday"],
     },
   });
 
@@ -57,7 +111,7 @@ export default function PlayerForm() {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Satyam" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name.
@@ -106,6 +160,202 @@ export default function PlayerForm() {
               <FormDescription>
                 Your date of birth is used to calculate your age.
               </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number (Optional)</FormLabel>
+              <FormControl>
+                <Input placeholder="+91-" {...field} />
+              </FormControl>
+              <FormDescription>
+                We will only use it to contact you if needed.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="psport"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Primary Sport</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a sport" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="athletics">Athletics</SelectItem>
+                  <SelectItem value="cricket">Cricket</SelectItem>
+                  <SelectItem value="football">Football</SelectItem>
+                  <SelectItem value="lawn-tennis">Lawn Tennis</SelectItem>
+                  <SelectItem value="table-tennis">Table Tennis</SelectItem>
+                  <SelectItem value="badminton">Badminton</SelectItem>
+                  <SelectItem value="hockey">Hockey</SelectItem>
+                  <SelectItem value="swimming">Swimming</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="plevel"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Skill Level</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select one option" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                  <SelectItem value="professional">Professional</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="ssport"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Secondary Sport</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a sport" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="athletics">Athletics</SelectItem>
+                  <SelectItem value="cricket">Cricket</SelectItem>
+                  <SelectItem value="football">Football</SelectItem>
+                  <SelectItem value="lawn-tennis">Lawn Tennis</SelectItem>
+                  <SelectItem value="table-tennis">Table Tennis</SelectItem>
+                  <SelectItem value="badminton">Badminton</SelectItem>
+                  <SelectItem value="hockey">Hockey</SelectItem>
+                  <SelectItem value="swimming">Swimming</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="slevel"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Skill Level</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select one option" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                  <SelectItem value="professional">Professional</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="height"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Your Height (in cm)</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="weight"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Your Weight (in kg)</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="days"
+          render={() => (
+            <FormItem>
+              <div className="mx-auto text-center">
+                <FormLabel className="text-base">Availability</FormLabel>
+                <FormDescription>
+                  Select the days when you are available.
+                </FormDescription>
+              </div>
+              <div className="flex justify-center">
+                {" "}
+                <div className="space-y-4">
+                  {" "}
+                  {days.map((day) => (
+                    <FormField
+                      key={day.id}
+                      control={form.control}
+                      name="days"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={day.id}
+                            className="flex flex-row items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(day.id)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([...field.value, day.id])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== day.id
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {day.label}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
               <FormMessage />
             </FormItem>
           )}

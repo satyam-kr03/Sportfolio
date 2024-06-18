@@ -1,7 +1,7 @@
 import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import PlayerForm from "./pages/PlayerForm";
-import { SportsForm } from "./pages/SportsList";
+import { TestPage } from "./pages/TestPage";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -9,8 +9,8 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/player" element={<PlayerForm />} />
-        <Route path="/sports" element={<SportsForm />} />
+        <Route path="/playerform" element={<PlayerForm />} />
+        <Route path="/test" element={<TestPage />} />
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </>

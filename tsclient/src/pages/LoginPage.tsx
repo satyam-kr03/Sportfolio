@@ -2,9 +2,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getToken, isLoggedIn, logout } from "@/UserContext";
+
 import axios from "axios";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,24 +16,28 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        "/login",
-        {
-          username: username,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+      await axios
+        .post(
+          "/login",
+          {
+            username: username,
+            password: password,
           },
-        }
-      );
-
-      console.log("Login successful:", response.data);
-      // Handle successful login (e.g., save token, redirect)
-      // For example:
-      // localStorage.setItem('token', response.data.access_token);
-      // navigate('/dashboard');
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        )
+        .then((response) => response.data)
+        .then((data) => {
+          if (data.access_token) {
+            // Store the token in localStorage
+            localStorage.setItem("access_token", data.access_token);
+            console.log("Login successful");
+          }
+        });
+      navigate("/dashboard");
     } catch (e) {
       console.error("Login failed:");
     } finally {

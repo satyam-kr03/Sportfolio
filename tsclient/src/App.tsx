@@ -5,6 +5,10 @@ import OrganizerForm from "./pages/OrganizerForm";
 import { PlayerDashboard } from "./pages/PlayerDashboard";
 import TestPage from "./pages/TestPage";
 import { Routes, Route } from "react-router-dom";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.withCredentials = true;
 
 function App() {
   return (

@@ -30,6 +30,8 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const days = [
   {
@@ -86,6 +88,9 @@ const formSchema = z.object({
 });
 
 export default function PlayerForm() {
+  const location = useLocation();
+  const { username, password } = location.state || {};
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,9 +99,29 @@ export default function PlayerForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const response = await axios.post(
+        "/register",
+        {
+          username: username,
+          company: "test company",
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Register successful:", response.data);
+      // Handle successful login (e.g., save token, redirect)
+    } catch (e) {
+      console.error("Register failed:", e);
+    }
     console.log(values);
-  }
+    console.log(values);
+  };
 
   return (
     <Form {...form}>

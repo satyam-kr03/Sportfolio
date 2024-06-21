@@ -7,6 +7,8 @@ from jwttoken import create_access_token
 from oauth import get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from osm import get_places
+
 
 app = FastAPI()
 origins = [
@@ -28,7 +30,6 @@ mongodb_uri = 'mongodb+srv://b22236:aJ1dV2aaUEq7bwRq@cluster0.0lem53h.mongodb.ne
 port = 8000
 client = MongoClient(mongodb_uri, port)
 db = client["User"]
-
 
 class User(BaseModel):
     username: str
@@ -65,3 +66,7 @@ def login(request:OAuth2PasswordRequestForm = Depends()):
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail = f'Wrong Username or password')
 	access_token = create_access_token(data={"sub": user["username"] })
 	return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get('/places')
+def find():
+	return get_places(7.735282,48.586797,7.756289,48.574457)

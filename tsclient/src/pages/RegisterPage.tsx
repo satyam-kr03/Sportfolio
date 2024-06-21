@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 import {
   Form,
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-import axios from "axios";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -24,40 +24,28 @@ const formSchema = z.object({
 });
 
 export default function RegisterForm() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const response = await axios.post(
-        "/register",
-        {
-          username: values.username,
-          company: "test company",
-          password: values.password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+  const onSubmitPlayer = async (values: z.infer<typeof formSchema>) => {
+    const username = values.username;
+    const password = values.password;
+    // Navvigate to form page
+    navigate("/register-player", { state: { username, password } });
+  };
 
-      console.log("Register successful:", response.data);
-      // Handle successful login (e.g., save token, redirect)
-    } catch (e) {
-      console.error("Register failed:", e);
-    }
-    console.log(values);
+  const onSubmitOrganizer = async (values: z.infer<typeof formSchema>) => {
+    const username = values.username;
+    const password = values.password;
+    // Navvigate to form page
+    navigate("/register-organizer", { state: { username, password } });
   };
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-1/5 space-y-6 mx-auto"
-      >
+      <form className="w-1/5 space-y-6 mx-auto">
         <FormField
           control={form.control}
           name="username"
@@ -81,14 +69,23 @@ export default function RegisterForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input type="password" placeholder="" {...field} />
               </FormControl>
-              <FormDescription>{/* Your password must be ..*/}</FormDescription>
+              <FormDescription>
+                {/* Your password must be .. */}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <div className="flex justify-between space-x-4 mx-auto">
+          <Button type="button" onClick={form.handleSubmit(onSubmitPlayer)}>
+            Register as Player
+          </Button>
+          <Button type="button" onClick={form.handleSubmit(onSubmitOrganizer)}>
+            Register as Organizer
+          </Button>
+        </div>
       </form>
     </Form>
   );

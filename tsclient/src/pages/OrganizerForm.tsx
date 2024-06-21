@@ -2,6 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 import {
   Form,
@@ -41,6 +43,9 @@ const formSchema = z.object({
 });
 
 export default function OrganizerForm() {
+  const location = useLocation();
+  const { username, password } = location.state || {};
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,9 +53,28 @@ export default function OrganizerForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const response = await axios.post(
+        "/register",
+        {
+          username: username,
+          company: "test company",
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Register successful:", response.data);
+      // Handle successful login (e.g., save token, redirect)
+    } catch (e) {
+      console.error("Register failed:", e);
+    }
     console.log(values);
-  }
+  };
 
   return (
     <Form {...form}>

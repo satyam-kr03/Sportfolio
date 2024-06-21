@@ -11,32 +11,36 @@ from typing_extensions import Annotated
 from bson import ObjectId
 import motor.motor_asyncio
 from pymongo import ReturnDocument
+from motor.motor_asyncio import AsyncIOMotorClient
+import asyncio
 
 
 app = FastAPI(
-    title="Student Course API",
+    title="Player Course API",
     summary="A sample application showing how to use FastAPI to add a ReST API to a MongoDB collection.",
 )
 client = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGODB_URL"])
-db = client.college
-student_collection = db.get_collection("students")
+# db = client.college
+db = client.platform
+Player_collection = db.get_collection("players")
 
 # Represents an ObjectId field in the database.
 # It will be represented as a `str` on the model so that it can be serialized to JSON.
 PyObjectId = Annotated[str, BeforeValidator(str)]
 
 
-class StudentModel(BaseModel):
+class PlayerModel(BaseModel):
     """
-    Container for a single student record.
+    Container for a single Player record.
     """
 
-    # The primary key for the StudentModel, stored as a `str` on the instance.
+    # The primary key for the PlayerModel, stored as a `str` on the instance.
     # This will be aliased to `_id` when sent to MongoDB,
     # but provided as `id` in the API requests and responses.
+
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
     name: str = Field(...)
-    email: EmailStr = Field(...)
+    # email: EmailStr = Field(...)
     course: str = Field(...)
     gpa: float = Field(..., le=4.0)
     model_config = ConfigDict(
@@ -53,7 +57,7 @@ class StudentModel(BaseModel):
     )
 
 
-class UpdateStudentModel(BaseModel):
+class UpdatePlayerModel(BaseModel):
     """
     A set of optional updates to be made to a document in the database.
     """
@@ -76,116 +80,68 @@ class UpdateStudentModel(BaseModel):
     )
 
 
-class StudentCollection(BaseModel):
+class PlayerCollection(BaseModel):
     """
-    A container holding a list of `StudentModel` instances.
+    A container holding a list of `PlayerModel` instances.
 
     This exists because providing a top-level array in a JSON response can be a [vulnerability](https://haacked.com/archive/2009/06/25/json-hijacking.aspx/)
     """
 
-    students: List[StudentModel]
+    players: List[PlayerModel]
 
 
 @app.post(
-    "/students/",
-    response_description="Add new student",
-    response_model=StudentModel,
+    "/players/",
+    response_description="Add new Player",
+    response_model=PlayerModel,
     status_code=status.HTTP_201_CREATED,
     response_model_by_alias=False,
 )
-async def create_student(student: StudentModel = Body(...)):
+async def create_Player(Player: PlayerModel = Body(...)):
     """
-    Insert a new student record.
+    Insert a new Player record.
 
     A unique `id` will be created and provided in the response.
     """
-    new_student = await student_collection.insert_one(
-        student.model_dump(by_alias=True, exclude=["id"])
+    new_Player = await Player_collection.insert_one(
+        Player.model_dump(by_alias=True, exclude=["id"])
     )
-    created_student = await student_collection.find_one(
-        {"_id": new_student.inserted_id}
+    created_Player = await Player_collection.find_one(
+        {"_id": new_Player.inserted_id}
     )
-    return created_student
+    return created_Player
 
 
 @app.get(
-    "/students/",
-    response_description="List all students",
-    response_model=StudentCollection,
+    "/players/",
+    response_description="List all players",
+    response_model=PlayerCollection,
     response_model_by_alias=False,
 )
-async def list_students():
+async def list_players():
     """
-    List all of the student data in the database.
+    List all of the Player data in the database.
 
     The response is unpaginated and limited to 1000 results.
     """
-    return StudentCollection(students=await student_collection.find().to_list(1000))
+    return PlayerCollection(players=await Player_collection.find().to_list(1000))
 
 
 @app.get(
-    "/students/{id}",
-    response_description="Get a single student",
-    response_model=StudentModel,
+    "/players/{id}",
+    response_description="Get a single Player",
+    response_model=PlayerModel,
     response_model_by_alias=False,
 )
-async def show_student(id: str):
+async def show_Player(id: str):
     """
-    Get the record for a specific student, looked up by `id`.
+    Get the record for a specific Player, looked up by `id`.
     """
     if (
-        student := await student_collection.find_one({"_id": ObjectId(id)})
+        Player := await Player_collection.find_one({"_id": ObjectId(id)})
     ) is not None:
-        return student
+        return Player
 
-    raise HTTPException(status_code=404, detail=f"Student {id} not found")
-
-
-@app.put(
-    "/students/{id}",
-    response_description="Update a student",
-    response_model=StudentModel,
-    response_model_by_alias=False,
-)
-async def update_student(id: str, student: UpdateStudentModel = Body(...)):
-    """
-    Update individual fields of an existing student record.
-
-    Only the provided fields will be updated.
-    Any missing or `null` fields will be ignored.
-    """
-    student = {
-        k: v for k, v in student.model_dump(by_alias=True).items() if v is not None
-    }
-
-    if len(student) >= 1:
-        update_result = await student_collection.find_one_and_update(
-            {"_id": ObjectId(id)},
-            {"$set": student},
-            return_document=ReturnDocument.AFTER,
-        )
-        if update_result is not None:
-            return update_result
-        else:
-            raise HTTPException(status_code=404, detail=f"Student {id} not found")
-
-    # The update is empty, but we should still return the matching document:
-    if (existing_student := await student_collection.find_one({"_id": id})) is not None:
-        return existing_student
-
-    raise HTTPException(status_code=404, detail=f"Student {id} not found")
-
-
-@app.delete("/students/{id}", response_description="Delete a student")
-async def delete_student(id: str):
-    """
-    Remove a single student record from the database.
-    """
-    delete_result = await student_collection.delete_one({"_id": ObjectId(id)})
-
-    if delete_result.deleted_count == 1:
-        return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-    raise HTTPException(status_code=404, detail=f"Student {id} not found")
+    raise HTTPException(status_code=404, detail=f"Player {id} not found")
 
 

@@ -31,16 +31,43 @@ port = 8000
 client = MongoClient(mongodb_uri, port)
 db = client["User"]
 
+class Player(BaseModel):
+	username: str
+	company: str
+	password: str
+	fullname: str
+	dob: str
+	phone: str
+	psport: str
+	plevel: str
+	ssport: str
+	slevel: str
+	height: str
+	weight: str
+	days: list
+
+class Organizer(BaseModel):
+	username: str
+	password: str
+	name: str
+	type: str
+	contact_name: str
+	phone: str
+	email: str
+	description: str
+
 class User(BaseModel):
-    username: str
-    company: str
-    password: str
+	username: str
+	password: str
+
 class Login(BaseModel):
 	username: str
 	password: str
+
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 class TokenData(BaseModel):
     username: Optional[str] = None
 
@@ -48,14 +75,43 @@ class TokenData(BaseModel):
 def read_root(current_user:User = Depends(get_current_user)):
 	return {"data":"Hello OWrld"}
 
-@app.post('/register')
-def create_user(request:User):
+@app.post('/register-player')
+def create_user(request:Player):
 	hashed_pass = Hash.bcrypt(request.password)
-	user_object = dict(request)
+	player_object = dict(request)
+	player_object["password"] = hashed_pass
+	player_id = db["players"].insert_one(player_object)
+	user_object = {}
+	user_object["username"] = request.username
 	user_object["password"] = hashed_pass
+	user_object["role"] = "player"
 	user_id = db["users"].insert_one(user_object)
 	# print(user)
-	return {"res":"created"}
+	return {"res":"created player user"}
+
+@app.post('/register-organizer')
+def create_user(request:Organizer):
+	hashed_pass = Hash.bcrypt(request.password)
+	organizer_object = dict(request)
+	organizer_object["password"] = hashed_pass
+	organizer_id = db["organizers"].insert_one(organizer_object)
+	user_object = {}
+	user_object["username"] = request.username
+	user_object["password"] = hashed_pass
+	user_object["role"] = "player"
+	user_id = db["users"].insert_one(user_object)
+	# print(user)
+	return {"res":"created organizer user"}
+
+
+# @app.post('/register')
+# def create_user(request:User):
+# 	hashed_pass = Hash.bcrypt(request.password)
+# 	user_object = dict(request)
+# 	user_object["password"] = hashed_pass
+# 	user_id = db["users"].insert_one(user_object)
+# 	# print(user)
+# 	return {"res":"created"}
 
 @app.post('/login')
 def login(request:OAuth2PasswordRequestForm = Depends()):

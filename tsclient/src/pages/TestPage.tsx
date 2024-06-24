@@ -1,169 +1,63 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import React, { useState, useEffect } from "react";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+const TestPage = () => {
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      // setError("");
+      console.log("No token found");
+      return;
+    }
 
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+    try {
+      const response = await fetch("http://127.0.0.1:8000/user", {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "name must be at least 2 characters.",
-  }),
-  phone: z.string().min(10, {
-    message: "Phone number must be at least 10 characters.",
-  }),
-  type: z.string({
-    required_error: "Please select at least one sport.",
-  }),
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
 
-  contactname: z.string(),
-  email: z.string().email(),
-  description: z.string(),
-});
+      const data = await response.json();
+      setUserData(data);
+      setError(null);
+    } catch (err) {
+      // setError(err.message);
+      setUserData(null);
+    }
+  };
 
-export default function TestPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-1/5 space-y-6 mx-auto"
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization Name</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Type of Organization</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select the appropriate option" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="club">Club</SelectItem>
-                  <SelectItem value="association">Association</SelectItem>
-                  <SelectItem value="company">Company</SelectItem>
-                  <SelectItem value="individual">Individual</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="contactname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Contact Person's Name</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormDescription>
-                {/* The name of the PoC for the event. */}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder="+91-" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization Email</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is will be used as the main mode of communication.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about your organization"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                This info will be shown to all users.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <Card className="w-full max-w-md mx-auto mt-8">
+      <CardHeader className="text-2xl font-bold">User Data</CardHeader>
+      <CardContent>
+        {error && <p className="text-red-500">{error}</p>}
+        {userData ? (
+          <pre className="bg-gray-100 p-4 rounded-md overflow-auto">
+            {JSON.stringify(userData, null, 2)}
+          </pre>
+        ) : (
+          <p>No user data available</p>
+        )}
+        <Button onClick={fetchUserData} className="mt-4">
+          Refresh Data
+        </Button>
+      </CardContent>
+    </Card>
   );
-}
+};
+
+export default TestPage;

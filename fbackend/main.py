@@ -136,3 +136,10 @@ def get_user_data(current_user: User = Depends(get_current_user)):
         "username": user["username"],
         # "role": user["role"]
     }
+
+''' 
+curl -X 'GET' \
+  'http://127.0.0.1:8000/user' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYXR5YW1rIiwiZXhwIjoxNzE5MjMxNzI5fQ.BzmWRJMEYLuur4AssvSooKXrGCCDandbX71ETcgvhdQ'
+'''

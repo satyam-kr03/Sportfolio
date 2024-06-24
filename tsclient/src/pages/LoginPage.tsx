@@ -37,7 +37,7 @@ export default function LoginPage() {
             console.log("Login successful");
           }
         });
-      navigate("/dashboard");
+      navigate("/test");
     } catch (e) {
       console.error("Login failed:");
     } finally {

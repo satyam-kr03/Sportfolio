@@ -7,6 +7,7 @@ from jwttoken import create_access_token, verify_token
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
+from osm import get_places
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -135,6 +136,10 @@ def get_user_data(current_user: User = Depends(get_current_user)):
 	user.pop("password")
 	return user
     
+@app.get('/places')
+def find():
+	return get_places(7.735282,48.586797,7.756289,48.574457)
+
 ''' 
 curl -X 'GET' \
   'http://127.0.0.1:8000/user' \

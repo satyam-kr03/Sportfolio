@@ -87,13 +87,20 @@ export default function LoginPage() {
             >
               {loading ? "Logging in..." : "Login"}
             </Button>
-
+            {/* 
             <Button variant="outline" className="w-full">
               Login with Google
-            </Button>
+            </Button> */}
           </div>
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
+            Don't have an account?
+            <Button
+              variant="link"
+              className="text-balance hover:underline"
+              onClick={() => navigate("/register")}
+            >
+              Register Here
+            </Button>
           </div>
         </div>
       </div>

@@ -65,7 +65,7 @@ const days = [
 ] as const;
 
 const formSchema = z.object({
-  username: z.string().min(2, {
+  fullname: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
   dob: z.date({
@@ -80,8 +80,8 @@ const formSchema = z.object({
   ssport: z.string(),
   plevel: z.string(),
   slevel: z.string(),
-  height: z.number(),
-  weight: z.number(),
+  height: z.string(),
+  weight: z.string(),
   days: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one day.",
   }),
@@ -94,7 +94,7 @@ export default function PlayerForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      fullname: "",
       days: ["saturday", "sunday"],
     },
   });
@@ -102,11 +102,20 @@ export default function PlayerForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const response = await axios.post(
-        "/register",
+        "/register-player",
         {
           username: username,
-          company: "test company",
           password: password,
+          fullname: values.fullname,
+          dob: values.dob,
+          phone: values.phone,
+          psport: values.psport,
+          plevel: values.plevel,
+          ssport: values.ssport,
+          slevel: values.slevel,
+          height: values.height,
+          weight: values.weight,
+          days: values.days,
         },
         {
           headers: {
@@ -120,7 +129,6 @@ export default function PlayerForm() {
       console.error("Register failed:", e);
     }
     console.log(values);
-    console.log(values);
   };
 
   return (
@@ -131,7 +139,7 @@ export default function PlayerForm() {
       >
         <FormField
           control={form.control}
-          name="username"
+          name="fullname"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Full Name</FormLabel>

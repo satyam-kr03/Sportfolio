@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-const TestPage = () => {
+const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
@@ -60,4 +60,4 @@ const TestPage = () => {
   );
 };
 
-export default TestPage;
+export default ProfilePage;

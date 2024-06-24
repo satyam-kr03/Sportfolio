@@ -1,4 +1,3 @@
-// import Link from "next/link";
 import { Link } from "react-router-dom";
 import {
   Activity,
@@ -40,6 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { logout } from "@/UserContext";
 
 export function PlayerDashboard() {
   return (
@@ -153,12 +153,16 @@ export function PlayerDashboard() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <Link to={"/profile"}>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <Link to={"/"}>
+                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

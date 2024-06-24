@@ -42,15 +42,14 @@ db = client["User"]
 
 class Player(BaseModel):
     username: str
-    company: str
     password: str
     fullname: str
     dob: str
-    phone: str
+    phone: Optional[str] = None
     psport: str
     plevel: str
-    ssport: str
-    slevel: str
+    ssport: Optional[str] = None
+    slevel: Optional[str] = None
     height: str
     weight: str
     days: list

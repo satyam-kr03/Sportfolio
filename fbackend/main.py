@@ -131,12 +131,11 @@ def get_user_data(current_user: User = Depends(get_current_user)):
 	print(user)
 	if not user:
 	    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    
-	return {
-        "username": user["username"],
-        # "role": user["role"]
-    }
 
+	user.pop("_id")
+	user.pop("password")
+	return user
+    
 ''' 
 curl -X 'GET' \
   'http://127.0.0.1:8000/user' \

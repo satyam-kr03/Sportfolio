@@ -32,6 +32,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const days = [
   {
@@ -89,6 +90,7 @@ const formSchema = z.object({
 
 export default function PlayerForm() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { username, password } = location.state || {};
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -125,6 +127,8 @@ export default function PlayerForm() {
       );
       console.log("Register successful:", response.data);
       // Handle successful login (e.g., save token, redirect)
+      // redirect to login page
+      navigate("/");
     } catch (e) {
       console.error("Register failed:", e);
     }

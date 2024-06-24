@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import {
@@ -37,7 +37,7 @@ const formSchema = z.object({
     required_error: "Please select at least one sport.",
   }),
 
-  contactname: z.string(),
+  contact_name: z.string(),
   email: z.string().email(),
   description: z.string(),
 });
@@ -45,6 +45,7 @@ const formSchema = z.object({
 export default function OrganizerForm() {
   const location = useLocation();
   const { username, password } = location.state || {};
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,11 +57,16 @@ export default function OrganizerForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const response = await axios.post(
-        "/register",
+        "/register-organizer",
         {
           username: username,
-          company: "test company",
           password: password,
+          name: values.name,
+          type: values.type,
+          contact_name: values.contact_name,
+          phone: values.phone,
+          email: values.email,
+          description: values.description,
         },
         {
           headers: {
@@ -70,6 +76,7 @@ export default function OrganizerForm() {
       );
       console.log("Register successful:", response.data);
       // Handle successful login (e.g., save token, redirect)
+      navigate("/");
     } catch (e) {
       console.error("Register failed:", e);
     }
@@ -123,7 +130,7 @@ export default function OrganizerForm() {
         />
         <FormField
           control={form.control}
-          name="contactname"
+          name="contact_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Contact Person's Name</FormLabel>

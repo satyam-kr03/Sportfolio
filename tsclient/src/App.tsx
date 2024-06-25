@@ -7,6 +7,7 @@ import { PlayerDashboard } from "./pages/PlayerDashboard";
 import TestPage from "./pages/TestPage";
 import ProfilePage from "./pages/ProfilePage";
 import { OrganizerDashboard } from "./pages/OrganizerDashboard";
+import EventForm from "./pages/EventForm";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/register-organizer" element={<OrganizerForm />} />
         <Route path="/dashboard" element={<PlayerDashboard />} />
         <Route path="/organizer-dashboard" element={<OrganizerDashboard />} />
+        <Route path="/new-event" element={<EventForm />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/test" element={<TestPage />} />
         <Route path="*" element={<h1>Not Found</h1>} />

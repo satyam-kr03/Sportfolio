@@ -148,7 +148,7 @@ export default function PlayerForm() {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="Satyam" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name.

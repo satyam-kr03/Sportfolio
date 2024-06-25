@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { getToken, isLoggedIn, logout } from "@/UserContext";
 
 import axios from "axios";
@@ -12,6 +13,43 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      // setError("");
+      console.log("No token found");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/user", {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const data = await response.json();
+      setUserData(data);
+      console.log(data.role);
+      if (data.role === "player") {
+        navigate("/dashboard");
+      }
+      if (data.role === "organizer") {
+        navigate("/organizer-dashboard");
+      }
+    } catch (err) {
+      // setError(err.message);
+      setUserData(null);
+    }
+  };
 
   const handleLogin = async () => {
     setLoading(true);
@@ -37,12 +75,13 @@ export default function LoginPage() {
             console.log("Login successful");
           }
         });
-      navigate("/dashboard");
     } catch (e) {
       console.error("Login failed:");
     } finally {
       setLoading(false);
     }
+
+    fetchUserData();
   };
 
   return (

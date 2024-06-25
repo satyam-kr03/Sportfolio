@@ -89,6 +89,7 @@ def create_user(request: Player):
     hashed_pass = Hash.bcrypt(request.password)
     player_object = dict(request)
     player_object["password"] = hashed_pass
+    player_object["role"] = "player"
     player_id = db["players"].insert_one(player_object)
     
     user_object = {
@@ -104,6 +105,7 @@ def create_user(request: Organizer):
     hashed_pass = Hash.bcrypt(request.password)
     organizer_object = dict(request)
     organizer_object["password"] = hashed_pass
+    organizer_object["role"] = "organizer"
     organizer_id = db["organizers"].insert_one(organizer_object)
     
     user_object = {
@@ -126,15 +128,18 @@ def login(request: OAuth2PasswordRequestForm = Depends()):
 
 @app.get("/user")
 def get_user_data(current_user: User = Depends(get_current_user)):
-	print(current_user)
-	user = db["users"].find_one({"username": current_user.username})
-	print(user)
-	if not user:
-	    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    user = db["users"].find_one({"username": current_user.username})
+    if(user["role"] == "player"):
+        user = db["players"].find_one({"username": current_user.username})
+    else:
+        user = db["organizers"].find_one({"username": current_user.username})
+    print(user)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-	user.pop("_id")
-	user.pop("password")
-	return user
+    user.pop("_id")
+    user.pop("password")
+    return user
     
 @app.get('/places')
 def find():

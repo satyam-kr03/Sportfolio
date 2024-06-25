@@ -29,6 +29,7 @@ const ProfilePage = () => {
 
       const data = await response.json();
       setUserData(data);
+      console.log(data.username);
       setError(null);
     } catch (err) {
       // setError(err.message);

@@ -55,8 +55,36 @@ const formSchema = z.object({
   description: z.string(),
 });
 
+import { useState } from "react";
+
 export default function EventForm() {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      console.log("No token found");
+      return;
+    }
+    try {
+      const response = await fetch("http://127.0.0.1:8000/user", {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      const data = await response.json();
+      console.log(data.username);
+      setUserData(data);
+    } catch (err) {
+      console.log("Error fetching user data");
+    }
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -66,6 +94,36 @@ export default function EventForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    fetchUserData();
+    try {
+      const response = await axios.post(
+        "/register-event",
+        {
+          username: userData.username,
+          name: values.name,
+          sport: values.sport,
+          type: values.type,
+          date: values.date,
+          venue: values.venue,
+          address: values.address,
+          city: values.city,
+          age_group: values.age_group,
+          gender_cat: values.gender_cat,
+          description: values.description,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Register successful:", response.data);
+      // Handle successful login (e.g., save token, redirect)
+      // redirect to login page
+      navigate("/");
+    } catch (e) {
+      console.error("Register failed:", e);
+    }
     console.log(values);
   };
 

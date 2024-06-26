@@ -8,7 +8,8 @@ import TestPage from "./pages/TestPage";
 import ProfilePage from "./pages/ProfilePage";
 import { OrganizerDashboard } from "./pages/OrganizerDashboard";
 import EventForm from "./pages/EventForm";
-import HomePage from "./pages/HomePage";
+// import HomePage from "./pages/HomePage";
+import { HomePage } from "./components/home-page";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 

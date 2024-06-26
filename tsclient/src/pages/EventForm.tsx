@@ -45,7 +45,7 @@ const formSchema = z.object({
     required_error: "Please select an event type.",
   }),
   date: z.date({
-    required_error: "A date of birth is required.",
+    required_error: "A date of event is required.",
   }),
   venue: z.string(),
   address: z.string(),
@@ -95,11 +95,16 @@ export default function EventForm() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     fetchUserData();
+    // if (!userData) {
+    //   console.log("No user data found");
+    //   return;
+    // }
+
     try {
       const response = await axios.post(
-        "/register-event",
+        "/create-event",
         {
-          username: userData.username,
+          organizer: userData.username,
           name: values.name,
           sport: values.sport,
           type: values.type,
@@ -117,12 +122,12 @@ export default function EventForm() {
           },
         }
       );
-      console.log("Register successful:", response.data);
+      console.log("New Event Created Successfully:", response.data);
       // Handle successful login (e.g., save token, redirect)
       // redirect to login page
       navigate("/");
     } catch (e) {
-      console.error("Register failed:", e);
+      console.error("Event creation failed:", e);
     }
     console.log(values);
   };

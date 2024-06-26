@@ -80,6 +80,19 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
+class Event(BaseModel):
+    organizer: str
+    name: str
+    sport: str
+    type: str
+    date: str
+    venue: str
+    address: str
+    city: str
+    age_group: str
+    gender_cat: str
+    description: str
+
 @app.get("/")
 def read_root(current_user: User = Depends(get_current_user)):
     return {"data": "Hello World"}
@@ -140,7 +153,15 @@ def get_user_data(current_user: User = Depends(get_current_user)):
     user.pop("_id")
     user.pop("password")
     return user
-    
+
+@app.post('/create-event')
+def create_event(request: Event):
+    event_object = dict(request)
+    # event_object["organizer"] = current_user.username
+    event_id = db["events"].insert_one(event_object)
+    return {"res": "created event"}
+
+
 @app.get('/places')
 def find():
 	return get_places(7.735282,48.586797,7.756289,48.574457)

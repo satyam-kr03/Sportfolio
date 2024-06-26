@@ -8,6 +8,7 @@ import TestPage from "./pages/TestPage";
 import ProfilePage from "./pages/ProfilePage";
 import { OrganizerDashboard } from "./pages/OrganizerDashboard";
 import EventForm from "./pages/EventForm";
+import HomePage from "./pages/HomePage";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 
@@ -18,7 +19,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/register-player" element={<PlayerForm />} />
         <Route path="/register-organizer" element={<OrganizerForm />} />

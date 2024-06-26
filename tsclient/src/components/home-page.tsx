@@ -23,6 +23,19 @@ To read more about using these font, please visit the Next.js documentation:
 - App Directory: https://nextjs.org/docs/app/building-your-application/optimizing/fonts
 - Pages Directory: https://nextjs.org/docs/pages/building-your-application/optimizing/fonts
 **/
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+
 import { Link } from "react-router-dom";
 
 export function HomePage() {
@@ -72,12 +85,34 @@ export function HomePage() {
                 empowering organizers to create unforgettable experiences.
               </p>
               <div className="flex justify-center gap-4">
-                <Link
-                  to="/"
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-[#00e6b8] px-8 text-sm font-medium text-[#0a0a0a] shadow transition-colors hover:bg-[#00c6a5] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#00e6b8] disabled:pointer-events-none disabled:opacity-50"
-                >
-                  Get Started
-                </Link>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="inline-flex h-10 items-center justify-center rounded-md bg-[#00e6b8] px-8 text-sm font-medium text-[#0a0a0a] shadow transition-colors hover:bg-[#00c6a5] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#00e6b8] disabled:pointer-events-none disabled:opacity-50">
+                      Get Started
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Continue to your account
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        If you already have an account, click the login button
+                        to proceed. Otherwise, please register first.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <Link to="/register">
+                        {" "}
+                        <AlertDialogAction>Register</AlertDialogAction>{" "}
+                      </Link>
+                      <Link to="/login">
+                        {" "}
+                        <AlertDialogAction>Login</AlertDialogAction>
+                      </Link>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
                 <Link
                   to="/"
                   className="inline-flex h-10 items-center justify-center rounded-md border border-[#00e6b8] bg-transparent px-8 text-sm font-medium text-[#00e6b8] shadow-sm transition-colors hover:bg-[#00e6b8] hover:text-[#0a0a0a] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#00e6b8] disabled:pointer-events-none disabled:opacity-50"

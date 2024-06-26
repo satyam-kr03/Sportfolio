@@ -1,92 +1,59 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
-import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "name must be at least 2 characters.",
-  }),
-  password: z.string(),
-});
-
-export default function RegisterForm() {
+export default function RegisterPage() {
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const onSubmitPlayer = async (values: z.infer<typeof formSchema>) => {
-    const username = values.username;
-    const password = values.password;
-    // Navvigate to form page
+  const onSubmitPlayer = async () => {
     navigate("/register-player", { state: { username, password } });
   };
 
-  const onSubmitOrganizer = async (values: z.infer<typeof formSchema>) => {
-    const username = values.username;
-    const password = values.password;
-    // Navvigate to form page
+  const onSubmitOrganizer = async () => {
     navigate("/register-organizer", { state: { username, password } });
   };
 
   return (
-    <Form {...form}>
-      <form className="w-1/5 space-y-6 mx-auto">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="" {...field} />
-              </FormControl>
-              <FormDescription>
-                {/* Your password must be .. */}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-between space-x-4 mx-auto">
-          <Button type="button" onClick={form.handleSubmit(onSubmitPlayer)}>
-            Register as Player
-          </Button>
-          <Button type="button" onClick={form.handleSubmit(onSubmitOrganizer)}>
-            Register as Organizer
-          </Button>
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="mx-auto w-full max-w-md space-y-6 rounded-lg bg-card p-6 shadow-lg">
+        <div className="space-y-2 text-center">
+          <h2 className="text-3xl font-bold tracking-tight">Register</h2>
+          <p className="text-muted-foreground">
+            Create a new account to get started.
+          </p>
         </div>
-      </form>
-    </Form>
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Button onClick={onSubmitPlayer}>Register as Player</Button>
+            <Button onClick={onSubmitOrganizer} variant="secondary">
+              Register as Organizer
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

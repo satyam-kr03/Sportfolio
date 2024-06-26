@@ -29,9 +29,11 @@ import {
 } from "@/components/ui/select";
 
 import { Input } from "@/components/ui/input";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
+import React, { useEffect } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -60,30 +62,34 @@ export default function EventForm() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
 
-  const fetchUserData = async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      console.log("No token found");
-      return;
-    }
-    try {
-      const response = await fetch("http://127.0.0.1:8000/user", {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch user data");
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        console.log("No token found");
+        return;
       }
-      const data = await response.json();
-      console.log(data.username);
-      setUserData(data);
-    } catch (err) {
-      console.log("Error fetching user data");
-    }
-  };
+      try {
+        const response = await fetch("http://127.0.0.1:8000/user", {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const data = await response.json();
+        console.log(data.username);
+        setUserData(data);
+      } catch (err) {
+        console.log("Error fetching user data");
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,12 +99,6 @@ export default function EventForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    fetchUserData();
-    // if (!userData) {
-    //   console.log("No user data found");
-    //   return;
-    // }
-
     try {
       const response = await axios.post(
         "/create-event",

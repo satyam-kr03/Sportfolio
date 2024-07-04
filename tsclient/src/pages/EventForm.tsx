@@ -90,6 +90,13 @@ import { logout } from "@/UserContext";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useState } from "react";
 import useGeolocation from "@/Geolocation";
+import {
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import useFetchPlaces from "@/FetchPlaces";
+import { VenueCard } from "@/components/venue-card";
 
 export default function EventForm() {
   const navigate = useNavigate();
@@ -107,6 +114,17 @@ export default function EventForm() {
       console.log("Current position:", position);
     }
   }, [position, loading, error]);
+
+  const {
+    data: venueData,
+    loadingplaces,
+    errorplaces,
+  } = useFetchPlaces(position.latitude, position.longitude);
+
+  useEffect(() => {
+    // You can perform any side effects here if needed when data, loading or error changes.
+    console.log("Venue Data:", venueData);
+  }, [venueData, loading, error]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -143,6 +161,22 @@ export default function EventForm() {
       name: "",
     },
   });
+
+  function VenueList() {
+    // Transform the data to an array
+    const venuesArray = Object.keys(venueData).map((key) => ({
+      name: venueData[key].name,
+      address: venueData[key].formatted, // or address_line2 if you prefer
+    }));
+
+    return (
+      <div className="flex flex-wrap gap-4">
+        {venuesArray.map((venue, index) => (
+          <VenueCard key={index} name={venue.name} address={venue.address} />
+        ))}
+      </div>
+    );
+  }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -183,7 +217,7 @@ export default function EventForm() {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+      <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
             to={"/"}
@@ -528,6 +562,22 @@ export default function EventForm() {
                 <Popup>You are here</Popup>
               </Marker>
             </MapContainer>
+            {/* <VenueList /> */}
+            <div className=" w-full flex justify-center p-6">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button>Find Venues</Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Here's a list of nearby venues</SheetTitle>
+                    <SheetDescription>
+                      <VenueList />
+                    </SheetDescription>
+                  </SheetHeader>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>

@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
 import useGeolocation from "@/Geolocation";
-import axios from "axios";
+import useFetchPlaces from "@/FetchPlaces";
 
-function findPlaces(latitude, longitude) {
-  const url = "/places";
-  const data = {
-    latitude: latitude,
-    longitude: longitude,
-  };
+const TestPage = () => {
+  const latitude = 0;
+  const longitude = 0;
+  const { data, loading, error } = useFetchPlaces(latitude, longitude);
 
-  axios
-    .post(url, data)
-    .then((response) => {
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.error("There was an error!", error);
-    });
-}
+  useEffect(() => {
+    // You can perform any side effects here if needed when data, loading or error changes.
+  }, [data, loading, error]);
 
-export default function TestPage() {
-  const { position, error, loading } = useGeolocation();
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: </div>;
 
-  findPlaces(7.735282, 48.586797);
+  return (
+    <div>
+      <h1>Places</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
 
-  return <div></div>;
-}
+export default TestPage;

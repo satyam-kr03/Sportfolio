@@ -13,7 +13,18 @@ def get_places(x1, y1, x2, y2):
 
     resp = requests.get(url=url, params=params)
     data = resp.json()
-    return data
+    i = 0
+    features = data['features']
+    output = {}
+    for feature in features:
+        for key in feature:
+            if key == 'properties':
+                if 'name' in feature[key]:
+                    i+=1
+                    output[i] = {}
+                    output[i] = feature[key]
+                
+    return output
 
 
 

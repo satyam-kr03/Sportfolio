@@ -89,10 +89,24 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { logout } from "@/UserContext";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useState } from "react";
+import useGeolocation from "@/Geolocation";
 
 export default function EventForm() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
+  const { position, error, loading } = useGeolocation();
+
+  const defaultPosition = [40.505, -100.09];
+  const mapPosition =
+    position.latitude && position.longitude
+      ? [position.latitude, position.longitude]
+      : defaultPosition;
+
+  useEffect(() => {
+    if (!loading && !error) {
+      console.log("Current position:", position);
+    }
+  }, [position, loading, error]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -162,6 +176,10 @@ export default function EventForm() {
     }
     console.log(values);
   };
+
+  if (loading) {
+    return <div>Fetching your location...</div>;
+  }
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -499,14 +517,14 @@ export default function EventForm() {
           <div className="absolute inset-0 pt-12 pb-64">
             <MapContainer
               className="w-full h-full rounded-lg shadow-lg"
-              center={[40.505, -100.09]}
+              center={mapPosition}
               zoom={13}
             >
               <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />{" "}
-              <Marker position={[40.505, -100.09]}>
+              />
+              <Marker position={mapPosition}>
                 <Popup>You are here</Popup>
               </Marker>
             </MapContainer>

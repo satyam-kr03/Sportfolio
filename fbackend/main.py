@@ -93,6 +93,10 @@ class Event(BaseModel):
     gender_cat: str
     description: str
 
+class Geolocation(BaseModel):
+    latitude: float
+    longitude: float
+
 @app.get("/")
 def read_root(current_user: User = Depends(get_current_user)):
     return {"data": "Hello World"}
@@ -172,9 +176,10 @@ def get_events():
     return event_list
 
 
-@app.get('/places')
-def find():
-	return get_places(7.735282,48.586797,7.756289,48.574457)
+
+@app.post('/places')
+def find(request: Geolocation):
+	return get_places(request.latitude, request.longitude, request.latitude + 0.01, request.longitude + 0.01)
 
 ''' 
 curl -X 'GET' \

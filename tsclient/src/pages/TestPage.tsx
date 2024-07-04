@@ -1,22 +1,28 @@
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useState, useEffect } from "react";
+import useGeolocation from "@/Geolocation";
+import axios from "axios";
+
+function findPlaces(latitude, longitude) {
+  const url = "/places";
+  const data = {
+    latitude: latitude,
+    longitude: longitude,
+  };
+
+  axios
+    .post(url, data)
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("There was an error!", error);
+    });
+}
 
 export default function TestPage() {
-  return (
-    <div className="w-1/2 h-96 mx-auto bg-background">
-      <MapContainer center={[40.505, -100.09]} zoom={13}>
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />{" "}
-        <Marker position={[40.505, -100.09]}>
-          <Popup>You are here</Popup>
-        </Marker>
-      </MapContainer>
-    </div>
-  );
+  const { position, error, loading } = useGeolocation();
+
+  findPlaces(7.735282, 48.586797);
+
+  return <div></div>;
 }

@@ -60,7 +60,7 @@ export function OrganizerDashboard() {
             Dashboard
           </Link>
           <Link
-            to={"/"}
+            to={"/events"}
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Events
@@ -351,7 +351,7 @@ export function OrganizerDashboard() {
               <Button asChild size="sm" className="mx-auto gap-1">
                 <Link to={"/new-event"}>
                   New Event
-                  <ArrowUpRight className="h-4 w-4" />
+                  {/* <ArrowUpRight className="h-4 w-4" /> */}
                 </Link>
               </Button>
             </CardContent>

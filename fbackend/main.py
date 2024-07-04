@@ -162,6 +162,16 @@ def create_event(request: Event):
     return {"res": "created event"}
 
 
+@app.get('/events')
+def get_events():
+    events = db["events"].find()
+    event_list = []
+    for event in events:
+        event.pop("_id")
+        event_list.append(event)
+    return event_list
+
+
 @app.get('/places')
 def find():
 	return get_places(7.735282,48.586797,7.756289,48.574457)

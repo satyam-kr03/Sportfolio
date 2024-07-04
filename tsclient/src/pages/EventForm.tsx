@@ -166,7 +166,7 @@ export default function EventForm() {
     // Transform the data to an array
     const venuesArray = Object.keys(venueData).map((key) => ({
       name: venueData[key].name,
-      address: venueData[key].formatted, // or address_line2 if you prefer
+      address: venueData[key].address_line2, // or address_line2 if you prefer
     }));
 
     return (
@@ -568,7 +568,7 @@ export default function EventForm() {
                 <SheetTrigger asChild>
                   <Button>Find Venues</Button>
                 </SheetTrigger>
-                <SheetContent>
+                <SheetContent className="overflow-y-auto max-h-screen">
                   <SheetHeader>
                     <SheetTitle>Here's a list of nearby venues</SheetTitle>
                     <SheetDescription>
